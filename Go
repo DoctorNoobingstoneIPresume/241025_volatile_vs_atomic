@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e -o pipefail
+
+Main ()
+{
+	rm -f 'Main'
+	g++ -g -O2 'Main.cpp' 'PerformOperation.cpp' -o 'Main'
+	'./Main' "$@"
+}
+
+Main "$@"
