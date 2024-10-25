@@ -72,9 +72,9 @@ bool Do_Main ()
 
 int main ()
 {
-	const bool b0 {Do_Main <uint64_t>               ()};
-	const bool b1 {Do_Main <volatile uint64_t>      ()};
-	const bool b2 {Do_Main <std::atomic <uint64_t>> ()};
+	const bool b0 {Do_Main <uint32_t>               ()};
+	const bool b1 {Do_Main <volatile uint32_t>      ()};
+	const bool b2 {Do_Main <std::atomic <uint32_t>> ()};
 	
 	return b0 && b1 && b2 ? EXIT_SUCCESS : EXIT_FAILURE;
 }

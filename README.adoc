@@ -1,0 +1,43 @@
+﻿= [2024-10-25] `volatile T` vs `std::atomic <T>`
+:docinfo:    shared
+:date:       2024-10-25
+:toc:        macro
+:stylesheet: asciidoc-classic.css
+
+== C++ `volatile` is not appropriate for Synchronization !!
+
+In this example, we have multiple threads incrementing a shared integer variable.
+We expect that the final result is the number of threads times the number of increments per thread.
+With `std::atomic <uintNN_t>`, the result is correct.
+With `volatile uintNN_t`, the result is incorrect, even with Visual C++'s `/volatile:ms` option for `cl`.
+
+References:
+
+- link:https://learn.microsoft.com/en-us/cpp/build/reference/volatile-volatile-keyword-interpretation[]
+
+- link:https://learn.microsoft.com/en-us/cpp/cpp/volatile-cpp[]
+
+- link:https://stackoverflow.com/questions/8819095/concurrency-atomic-and-volatile-in-c11-memory-model[]
+
+- link:https://stroustrup.com/4th.html[Bjarne Stroustrup - 2013 - "The C++ Programming Language (4th edition)"] - Section 41.4 (`volatile`):
+
+"[...]
+Do not assume that `volatile` has special meaning in the memory model. It does not. It is not – as
+in some later languages – a synchronization mechanism. To get synchronization, use an atomic
+(§41.3), a mutex (§42.3.1), or a condition_variable (§42.3.4).
+[...]"
+
+- Generated x86_32 Assembler code to increment a 32-bit integer (in memory, pointed-to by `eax`) is:
+
+-- with `volatile uint32_t`:
+
+```
+inc [dword ptr eax]
+```
+
+-- with `std::atomic <uint32_t>`:
+
+```
+mov ecx, 1
+lock xadd [eax], ecx
+```
